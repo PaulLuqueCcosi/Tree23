@@ -1,4 +1,4 @@
-package Tree23.src;
+package src;
 
 import java.util.Arrays;
 
@@ -12,6 +12,31 @@ public class Node<T extends Comparable<T>> {
     private Node<T>[] children;
     private T[] values;
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + Arrays.hashCode(children);
+        result = prime * result + Arrays.hashCode(values);
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Node other = (Node) obj;
+        if (!Arrays.equals(children, other.children))
+            return false;
+        if (!Arrays.equals(values, other.values))
+            return false;
+        return true;
+    }
+
     public Node() {
         this.children = new Node[MAX_CHILDREN];
         this.values = (T[]) new Comparable[MAX_VALUES];
@@ -21,6 +46,14 @@ public class Node<T extends Comparable<T>> {
         this.children = new Node[MAX_CHILDREN];
         this.values = (T[]) new Comparable[MAX_VALUES];
         this.values[0] = value;
+    }
+
+    public Node(T value1, T value2) {
+        this.children = new Node[MAX_CHILDREN];
+        this.values = (T[]) new Comparable[MAX_VALUES];
+        this.values[0] = value1;
+        this.values[1] = value2;
+
     }
 
     public void clear() {
@@ -63,21 +96,17 @@ public class Node<T extends Comparable<T>> {
         return values[1];
     }
 
-    public T[] getCopyValues() {
-        return Arrays.copyOf(values, size);
-    }
-
     public T[] getValues() {
         return values;
     }
 
     // public metos is2NOde, is3Node
     public boolean is2Node() {
-        return getValues().length == 1;
+        return (this.getLeftValue() != null && this.getRightValue() == null);
     }
 
     public boolean is3Node() {
-        return getValues().length == 2;
+        return (this.getLeftValue() != null && this.getRightValue() != null);
     }
 
     public Node<T> insert(T element) {
@@ -158,7 +187,7 @@ public class Node<T extends Comparable<T>> {
             newNodeCenter.setCenterChild(newRightNode);
             newNodeCenter.setLeftChild(newLeftNode);
 
-        } else if (newElement.getLeftValue().compareTo(this.getMinValue()) == ROOT_IS_BIGGER) {
+        } else if (newElement.getLeftValue().compareTo(this.getMaxValue()) == ROOT_IS_BIGGER) {
             // izquierda
             newLeftNode = new Node<T>(this.getMinValue());
             newLeftNode.setLeftChild(this.getLeftChild());
@@ -179,7 +208,6 @@ public class Node<T extends Comparable<T>> {
             // newRightNode = new Node<T>(this.getMaxValue());
             // T midvalue = newElement;
             // this.clear();
-           
 
             // izquierda
             newLeftNode = new Node<T>(this.getMinValue());
@@ -203,6 +231,10 @@ public class Node<T extends Comparable<T>> {
         return newNodeCenter;
     }
     // set left, right, center childen
+
+    public Node<T> testSplitNode(Node<T> newElement) {
+        return split(newElement);
+    }
 
     private void setLeftChild(Node<T> leftChild) {
         this.children[0] = leftChild;
@@ -229,4 +261,18 @@ public class Node<T extends Comparable<T>> {
         return this.getLeftValue() != null && this.getRightValue() != null;
     }
 
+    public boolean contains(T data){
+        if(is2Node()){
+            return this.getLeftValue().equals(data);
+        }else{
+            return this.getLeftValue().equals(data) || this.getRightValue().equals(data);
+        }
+    }
+
+    public void reBalance() {
+    }
+
+    public boolean isBalanced() {
+        return false;
+    } 
 }

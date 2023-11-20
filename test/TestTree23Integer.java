@@ -1,6 +1,6 @@
-package Tree23.test;
+package test;
 
-import Tree23.src.DTATree23;
+import src.DTATree23;
 
 public class TestTree23Integer {
 

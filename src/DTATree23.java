@@ -1,4 +1,4 @@
-package Tree23.src;
+package src;
 
 public interface DTATree23<T extends Comparable<T>> {
 

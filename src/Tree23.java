@@ -1,8 +1,8 @@
-package Tree23.src;
+package src;
 
 public class Tree23<T extends Comparable<T>> implements DTATree23<T> {
 
-    private Node root;
+    private Node<T> root;
     private static final int ROOT_IS_BIGGER = 1;
     private static final int ROOT_IS_SMALLER = -1;
     private static final int ROOT_IS_EQUALS = 0;
@@ -91,7 +91,43 @@ public class Tree23<T extends Comparable<T>> implements DTATree23<T> {
 
     @Override
     public void delete(T element) {
-        // Implementación de la eliminación en el árbol 2-3
+    
+
+    }
+
+    
+
+    private Node<T> searchForDelete(Node<T> currentNode, T element) {
+        if (currentNode == null) {
+            return null;
+        } else if (currentNode.contains(element)) {
+            return currentNode;
+        }
+
+        else {
+            // Compare with left value
+            int compareLeft = element.compareTo(currentNode.getLeftValue());
+            if (compareLeft == 0) {
+                return currentNode; // Element found
+            } else if (compareLeft < 0 && currentNode.getLeftChild() != null) {
+                return searchForDelete(currentNode.getLeftChild(), element);
+            }
+
+            // Compare with right value
+            int compareRight = element.compareTo(currentNode.getRightValue());
+            if (compareRight == 0) {
+                return currentNode; // Element found
+            } else if (compareRight > 0 && currentNode.getRightChild() != null) {
+                return searchForDelete(currentNode.getRightChild(), element);
+            }
+
+            // If it's a 3-node, compare with middle value
+            if (currentNode.is3Node()) {
+                return searchForDelete(currentNode.getMiddleChild(), element);
+            }
+            return null;
+        }
+
     }
 
     @Override
