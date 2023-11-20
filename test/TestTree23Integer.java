@@ -19,6 +19,8 @@ public class TestTree23Integer {
             System.out.println("testIsEmpty failed!");
             System.out.println();
             System.out.println();
+        }else{
+            System.out.println("testIsEmpty passed!");
         }
 
         tree.clear();
@@ -28,6 +30,8 @@ public class TestTree23Integer {
             System.out.println("testInsert failed!");
             System.out.println();
             System.out.println();
+        }else{
+            System.out.println("testInsert passed!!");
         }
 
         tree.clear();
@@ -38,6 +42,8 @@ public class TestTree23Integer {
             System.out.println();
             System.out.println();
             System.out.println();
+        }else {
+            System.out.println("testSearch passed!");
         }
 
         tree.clear();
@@ -48,6 +54,8 @@ public class TestTree23Integer {
             System.out.println();
             System.out.println();
 
+        } else {
+            System.out.println("testDelete passed!");
         }
 
         tree.clear();
@@ -123,9 +131,9 @@ public class TestTree23Integer {
         tree.insert(12);
         result = assertInOrder("3 5 7 10 12 15") && result;
 
-        // // Insert 20
-        // tree.insert(20);
-        // result = result && assertInOrder("3 5 7 10 12 15 20");
+        // Insert 20
+        tree.insert(20);
+        result = assertInOrder("3 5 7 10 12 15 20") && result;
 
         // // Insert 1
         // tree.insert(1);
@@ -142,7 +150,7 @@ public class TestTree23Integer {
         // System.out.println("All checks passed successfully!");
 
         // Return true if all checks pass
-        return true;
+        return result;
     }
 
     // Helper method to assert the pre-order traversal
@@ -150,11 +158,14 @@ public class TestTree23Integer {
         String inOrderResult = tree.inOrder();
         if (!inOrderResult.equals(expectedInOrder)) {
             System.out.println(
-                    "Error: In-order is incorrect. Expected: " + expectedInOrder + ", Actual: " + inOrderResult);
+                    "Error: In-order is incorrect. Expected: (" + expectedInOrder + "), Actual: (" + inOrderResult+")");
             return false;
+        }else{
+            System.out.println(
+                    "Passed: In-order is CORRECT. Expected: (" + expectedInOrder + "), Actual: (" + inOrderResult+")");
+            return true;
         }
 
-        return true;
     }
 
     // Test search operation

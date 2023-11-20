@@ -3,6 +3,8 @@ package Tree23.src;
 public class Tree23<T extends Comparable<T>> implements DTATree23<T> {
 
     private Node root;
+    private static final int ROOT_IS_BIGGER = 1;
+    private static final int ROOT_IS_SMALLER = -1;
 
     @Override
     public boolean insert(T element) {
@@ -20,7 +22,6 @@ public class Tree23<T extends Comparable<T>> implements DTATree23<T> {
     }
 
     private Node<T> insertRecursive(Node<T> currentNode, T element) {
-
         // condicion de parada
         if (currentNode.isLeaf()) {
             return currentNode.insert(element);
@@ -28,17 +29,28 @@ public class Tree23<T extends Comparable<T>> implements DTATree23<T> {
 
         // recursividad
         // Determine which child to traverse based on the element's value
-        if (element.compareTo(currentNode.getLeftValue()) < 0) {
-            currentNode.insert(insertRecursive(currentNode.getLeftChild(), element));
-        } else if (currentNode.is2Node() || element.compareTo(currentNode.getRightValue()) < 0) {
-            currentNode.insert(insertRecursive(currentNode.getMiddleChild(), element));
+        if (element.compareTo(currentNode.getLeftValue()) == ROOT_IS_SMALLER) {
+            if (currentNode.getLeftChild().isSplitForInsert()) {
+                currentNode.insert(insertRecursive(currentNode.getLeftChild(), element));
+            } else {
+                insertRecursive(currentNode.getLeftChild(), element);
+            }
+        } else if (element.compareTo(currentNode.getLeftValue()) == ROOT_IS_BIGGER) {
+            if (currentNode.getRightChild().isSplitForInsert()) {
+                currentNode.insert(insertRecursive(currentNode.getRightChild(), element));
+            } else {
+                insertRecursive(currentNode.getRightChild(), element);
+            }
         } else {
-            currentNode.insert(insertRecursive(currentNode.getRightChild(), element));
+            if (currentNode.getMiddleChild().isSplitForInsert()) {
+                currentNode.insert(insertRecursive(currentNode.getMiddleChild(), element));
+            } else {
+                insertRecursive(currentNode.getMiddleChild(), element);
+            }
         }
 
-        return null;
+        return currentNode;
     }
-
 
     @Override
     public boolean search(T element) {
@@ -53,24 +65,51 @@ public class Tree23<T extends Comparable<T>> implements DTATree23<T> {
 
     @Override
     public String inOrder() {
-        return inOrderTraversal(root).trim(); // Adjust as needed
+        StringBuilder str = new StringBuilder();
+
+        if (!isEmpty()) {
+            return inOrder(root, str).substring(0, str.length() - 1);
+        } else {
+            // System.out.print("The tree is empty...");
+            return "The tree is empty...";
+        }
     }
 
-    // In-order traversal helper method
-    private String inOrderTraversal(Node<T> currentNode) {
-        StringBuilder result = new StringBuilder();
+    /**
+     * Method for displaying tree elements in the order of the method - "in-order"
+     */
+    private String inOrder(Node<T> current, StringBuilder str) {
 
-        if (currentNode != null) {
-            result.append(inOrderTraversal(currentNode.getLeftChild()));
-            result.append(currentNode.getLeftValue()).append(" ");
-            result.append(inOrderTraversal(currentNode.getMiddleChild()));
-            if (currentNode.is3Node()) {
-                result.append(currentNode.getRightValue()).append(" ");
-                result.append(inOrderTraversal(currentNode.getRightChild()));
+        if (current != null) {
+
+            if (current.isLeaf()) {
+                if (current.getLeftValue() != null) {
+                    str.append(current.getLeftValue().toString() + " ");
+                }
+                if (current.getRightValue() != null) {
+                    str.append(current.getRightValue().toString() + " ");
+                }
+                return str.toString();
+            } else {
+                inOrder(current.getLeftChild(), str);
+                if (current.getLeftValue() != null) {
+                    str.append(current.getLeftValue().toString() + " ");
+                }
+                inOrder(current.getMiddleChild(), str);
+
+                if (current.getRightValue() != null) {
+                    str.append(current.getRightValue().toString() + " ");
+                }
+
+                inOrder(current.getRightChild(), str);
+
+                return str.toString();
             }
-        }
 
-        return result.toString();
+        } else {
+            // System.out.print("The tree is empty...");
+            return "";
+        }
     }
 
     @Override
