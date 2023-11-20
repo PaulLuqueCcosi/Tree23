@@ -5,6 +5,7 @@ public class Tree23<T extends Comparable<T>> implements DTATree23<T> {
     private Node root;
     private static final int ROOT_IS_BIGGER = 1;
     private static final int ROOT_IS_SMALLER = -1;
+    private static final int ROOT_IS_EQUALS = 0;
 
     @Override
     public boolean insert(T element) {
@@ -54,8 +55,38 @@ public class Tree23<T extends Comparable<T>> implements DTATree23<T> {
 
     @Override
     public boolean search(T element) {
-        // Implementación de la búsqueda en el árbol 2-3
-        return false; // Ajustar según sea necesario
+        return search(root, element);
+    }
+
+    private boolean search(Node<T> currentNode, T element) {
+        if (currentNode == null) {
+            return false;
+        }
+
+        // Compare with left value
+        int compareLeft = element.compareTo(currentNode.getLeftValue());
+        if (compareLeft == 0) {
+            return true; // Element found
+        } else if (compareLeft < 0 && currentNode.getLeftChild() != null) {
+            return search(currentNode.getLeftChild(), element);
+        }
+
+        // Compare with right value
+        int compareRight = element.compareTo(currentNode.getRightValue());
+        if (compareRight == 0) {
+            return true; // Element found
+        } else if (compareRight > 0 && currentNode.getRightChild() != null) {
+            return search(currentNode.getRightChild(), element);
+        }
+
+        // If it's a 3-node, compare with middle value
+        if (currentNode.is3Node()) {
+            return search(currentNode.getMiddleChild(), element);
+
+        }
+
+        // If none of the conditions match, the element is not in the current node
+        return false;
     }
 
     @Override
