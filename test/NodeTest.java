@@ -323,8 +323,8 @@ public class NodeTest {
         assertEquals(0, fourNode.removeValueInNode(2));
 
         // verifcamos los valores
-        assertEquals(Integer.valueOf(1), threeNode.getLeftValue());
-        assertEquals(null, threeNode.getRightValue());
+        assertEquals(Integer.valueOf(1), fourNode.getLeftValue());
+        assertEquals(null, fourNode.getRightValue());
 
     }
 
