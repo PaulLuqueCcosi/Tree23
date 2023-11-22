@@ -269,7 +269,7 @@ public class NodeTest {
         node = node.insert(Integer.valueOf(30));
 
         // eliminamos a la fuerza
-        node.testSetCenterChild(null);
+        node.testSetCenterChild(new Node<>());
 
         // rebalance
         assertEquals(1, node.reBalance());
@@ -287,10 +287,11 @@ public class NodeTest {
         Node<Integer> node = new Node<>(20);
         node = node.insert(Integer.valueOf(10));
         node = node.insert(Integer.valueOf(30));
-        node = node.insert(Integer.valueOf(5));
+
+        node.testSetLeftChild(node.getLeftChild().insert(Integer.valueOf(5)));
 
         // eliminamos a la fuerza
-        node.testSetCenterChild(null);
+        node.testSetCenterChild(new Node<>());
 
         // rebalance
         assertEquals(0, node.reBalance());
@@ -298,7 +299,37 @@ public class NodeTest {
         assertEquals(node.getRightValue(), null);
 
         assertEquals(node.getLeftChild().getLeftValue(), Integer.valueOf(5));
-        assertEquals(node.getRightChild().getLeftValue(), Integer.valueOf(20));
+        assertEquals(node.getMiddleChild().getLeftValue(), Integer.valueOf(20));
+
+    }
+
+    @Test
+    public void testReBalance3() {
+        // Caso 1: Nodo balanceado, no se requiere rebalanceo
+        Node<Integer> node = new Node<>(20, 40);
+        Node<Integer> left = new Node<>(10);
+        Node<Integer> right = new Node<>(50, 60);
+
+        node.testSetRightChild(right);
+        node.testSetLeftChild(left);
+
+        // eliminamos a la fuerza
+        node.testSetCenterChild(new Node<>());
+
+        // rebalance
+        assertEquals(0, node.reBalance());
+        assertEquals(node.getLeftValue(), Integer.valueOf(40));
+        assertEquals(node.getRightValue(), null);
+
+        assertEquals(node.getMiddleChild().getLeftValue(), Integer.valueOf(50));
+        assertEquals(node.getMiddleChild().getRightValue(), Integer.valueOf(60));
+
+        assertEquals(node.getRightValue(), null);
+        assertEquals(node.getRightChild(), null);
+        
+        
+    
+
 
     }
 

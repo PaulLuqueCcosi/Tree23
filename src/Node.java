@@ -102,6 +102,33 @@ public class Node<T extends Comparable<T>> {
         return values;
     }
 
+    private T getAndDeleteLeftValue() {
+        T leftValue = getLeftValue();
+
+        // fix childs
+        this.setLeftChild(this.getMiddleChild());
+        this.setCenterChild(this.getRightChild());
+        this.setRightChild(null);
+
+        // fix values
+        this.setLeftValue(this.getRightValue());
+        this.setRightValue(null);
+
+        return leftValue;
+    }
+
+    private T getAndDeleteRightValue() {
+        T rightValue = getRightValue();
+
+        // fix childs
+        this.setRightChild(null);
+
+        // fix values
+        this.setRightValue(null);
+
+        return rightValue;
+    }
+
     // public metos is2NOde, is3Node
 
     public boolean is2Node() {
@@ -134,6 +161,8 @@ public class Node<T extends Comparable<T>> {
         return newNode;
     }
 
+    
+
     public Node<T> insert(Node<T> nodeToInsert) {
         Node<T> newNode = this;
 
@@ -144,7 +173,7 @@ public class Node<T extends Comparable<T>> {
         }
 
         // Determine the correct position to insert the new element
-        else if (nodeToInsert.getLeftValue().compareTo(this.getLeftValue()) == ROOT_IS_SMALLER) {
+        else if (this.getLeftValue() == null || nodeToInsert.getLeftValue().compareTo(this.getLeftValue()) == ROOT_IS_SMALLER) {
             // Insert to the left
             this.setRightValue(this.getLeftValue());
             this.setLeftValue(nodeToInsert.getLeftValue());
@@ -298,38 +327,56 @@ public class Node<T extends Comparable<T>> {
 
     private int reBalanceLeft(Node<T> node) {
         // si el hermano del medio tiene 1 valor
-        if (this.getMiddleChild().is2Node()) {
-
+        if (node.getMiddleChild().is2Node()) {
+            T leftdata = node.getAndDeleteLeftValue();
+            node.getLeftChild().insert(leftdata);
+            return (node.isEmptyValues() ? 1 : 0);
         }
         // tiene 2 valores el hermano
         else {
-
+            T leftdata = node.getAndDeleteLeftValue();
+            Node<T> newLeftChil = node.getLeftChild().insert(leftdata);
+            node.setLeftChild(newLeftChil);
+            return (node.isEmptyValues() ? 1 : 0);
         }
-        return 0;
     }
 
     private int reBalanceMid(Node<T> node) {
-        // si el hermano del medio tiene 1 valor
-        if (this.getLeftChild().is2Node()) {
+        // si el hermano del IZQUIERDO tiene 1 valor
+        if (node.getLeftChild().is2Node()) {
+            Node<T> oldLeftNode = node.getLeftChild();
+            T leftData = node.getAndDeleteLeftValue();
+            node.getLeftChild().setLeftValue(leftData);
 
+            node.getLeftChild().insert(oldLeftNode);
+            return (node.isEmptyValues() ? 1 : 0);
         }
         // tiene 2 valores el hermano
         else {
+            Node<T> oldLeftNode = node.getLeftChild();
+            T leftData = node.getAndDeleteLeftValue();
+            node.getLeftChild().setLeftValue(leftData);
 
+            Node<T> newLeftChil = oldLeftNode.insert(node.getLeftChild());
+            node.insert(newLeftChil);
+            return (node.isEmptyValues() ? 1 : 0);
         }
-        return 0;
     }
 
     private int reBalanceRight(Node<T> node) {
         // si el hermano del medio tiene 1 valor
-        if (this.getMiddleChild().is2Node()) {
-
+        if (node.getMiddleChild().is2Node()) {
+            T rightData = node.getAndDeleteRightValue();
+            node.getMiddleChild().insert(rightData);
+            return (node.isEmptyValues() ? 1 : 0);
         }
         // tiene 2 valores el hermano
         else {
-
+            T rightData = node.getAndDeleteRightValue();
+            Node<T> newMidChild = node.getMiddleChild().insert(rightData);
+            node.setCenterChild(newMidChild);
+            return (node.isEmptyValues() ? 1 : 0);
         }
-        return 0;
     }
 
     public int removeValueInNode(T data) {
