@@ -12,7 +12,9 @@ public class Node<T extends Comparable<T>> {
     private Node<T>[] children;
     private T[] values;
 
-    @Override
+    
+
+    
     public int hashCode() {
         final int prime = 31;
         int result = 1;
@@ -21,7 +23,7 @@ public class Node<T extends Comparable<T>> {
         return result;
     }
 
-    @Override
+    
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
@@ -56,31 +58,38 @@ public class Node<T extends Comparable<T>> {
 
     }
 
+    
     public void clear() {
         this.children = new Node[MAX_CHILDREN];
         this.values = (T[]) new Comparable[MAX_VALUES];
     }
 
+    
     public boolean isLeaf() {
         return this.getLeftChild() == null && this.getMiddleChild() == null && this.getRightChild() == null;
     }
 
+    
     public Node<T> getLeftChild() {
         return children[0];
     }
 
+    
     public Node<T> getMiddleChild() {
         return children[1];
     }
 
+    
     public Node<T> getRightChild() {
         return children[2];
     }
 
+    
     public T getMinValue() {
         return getLeftValue();
     }
 
+    
     public T getMaxValue() {
         if (getRightValue() == null) {
             return getLeftValue();
@@ -88,27 +97,33 @@ public class Node<T extends Comparable<T>> {
         return getRightValue();
     }
 
+    
     public T getLeftValue() {
         return values[0];
     }
 
+    
     public T getRightValue() {
         return values[1];
     }
 
+    
     public T[] getValues() {
         return values;
     }
 
     // public metos is2NOde, is3Node
+    
     public boolean is2Node() {
         return (this.getLeftValue() != null && this.getRightValue() == null);
     }
 
+    
     public boolean is3Node() {
         return (this.getLeftValue() != null && this.getRightValue() != null);
     }
 
+    
     public Node<T> insert(T element) {
         Node<T> newNode = this;
 
@@ -131,6 +146,7 @@ public class Node<T extends Comparable<T>> {
         return newNode;
     }
 
+    
     public Node<T> insert(Node<T> nodeToInsert) {
         Node<T> newNode = this;
 
@@ -232,6 +248,7 @@ public class Node<T extends Comparable<T>> {
     }
     // set left, right, center childen
 
+    
     public Node<T> testSplitNode(Node<T> newElement) {
         return split(newElement);
     }
@@ -257,10 +274,12 @@ public class Node<T extends Comparable<T>> {
         this.values[1] = rightValue;
     }
 
+    
     public boolean isSplitForInsert() {
         return this.getLeftValue() != null && this.getRightValue() != null;
     }
 
+    
     public boolean contains(T data){
         if(is2Node()){
             return this.getLeftValue().equals(data);
@@ -269,10 +288,45 @@ public class Node<T extends Comparable<T>> {
         }
     }
 
-    public void reBalance() {
+    
+    public int reBalance() {
+        // TODO
+        // devuelve 1 si necesita rebalancear este nodo
+        return 0;
     }
 
-    public boolean isBalanced() {
-        return false;
-    } 
+    
+    public int removeValueInNode(T data) {
+        // TODO
+        // devuelve 1 si necesita rebalancear este nodo
+
+        return 0;
+    }
+
+    
+    public Node<T> getSuccesor(T valor){
+        // TODO
+        return null;
+
+    }
+
+    
+    public void swapValue(T value, Node<T> nodeSuccesor) {
+        // TODO
+    }
+
+    // para testear
+    
+    public void testSetLeftChild(Node<T> leftChild){
+        this.children[0] = leftChild;
+    }
+    
+    public void testSetRightChild(Node<T> rightChild){
+        this.children[2] = rightChild;
+    }
+    
+    public void testSetCenterChild(Node<T> centerChild){
+        this.children[1] = centerChild;
+    }
+
 }
