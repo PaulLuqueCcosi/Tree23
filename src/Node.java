@@ -312,7 +312,14 @@ public class Node<T extends Comparable<T>> {
 
     
     public void swapValue(T value, Node<T> nodeSuccesor) {
-        // TODO
+        if(value == this.getLeftValue()){
+            this.setLeftValue(nodeSuccesor.getLeftValue());
+        }
+        else if(value == this.getRightValue()){
+            this.setRightValue(nodeSuccesor.getLeftValue());
+        }
+
+        nodeSuccesor.setLeftValue(value);
     }
 
     // para testear

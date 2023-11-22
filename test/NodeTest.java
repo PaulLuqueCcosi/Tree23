@@ -393,7 +393,7 @@ public class NodeTest {
         assertEquals(Integer.valueOf(10), initNode4.getLeftValue());
         assertEquals(Integer.valueOf(30), initNode4.getRightValue());
         // other node
-        assertEquals(Integer.valueOf(30), otherNode3.getLeftValue());
-        assertEquals(Integer.valueOf(35), otherNode3.getRightValue());
+        assertEquals(Integer.valueOf(20), otherNode4.getLeftValue());
+        assertEquals(Integer.valueOf(35), otherNode4.getRightValue());
     }
 }
