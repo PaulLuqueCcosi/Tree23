@@ -5,7 +5,6 @@ public class Tree23<T extends Comparable<T>> implements DTATree23<T> {
     private Node<T> root;
     private static final int ROOT_IS_BIGGER = 1;
     private static final int ROOT_IS_SMALLER = -1;
-    private static final int ROOT_IS_EQUALS = 0;
 
     @Override
     public boolean insert(T element) {
@@ -91,43 +90,101 @@ public class Tree23<T extends Comparable<T>> implements DTATree23<T> {
 
     @Override
     public void delete(T element) {
-    
+        int resultRebalance = 0;
+        // The element is in the current root
+        if (root.contains(element) && root.isLeaf()) {
+            if (root.removeValueInNode(element) == 1) {
+                // rebalance root node
+                this.root = null;
+            }
+
+        }
+        // The element is not in the current root
+        else {
+            resultRebalance = deleteRecursive(root, element);
+            if(resultRebalance == -1){
+                System.out.println("NO SE ENCONTRO EL ELEMNTO PARA ELIMINAR");
+            }
+            if(resultRebalance == 1){
+                root = root.getLeftChild();
+            }
+        }
 
     }
 
-    
+    private int deleteRecursive(Node<T> node, T element) {
+        if(node == null){
+            return -1;
+        }else if (node.contains(element)){
+            if(node.isLeaf()){
+                int result = node.removeValueInNode(element);
+                return result;
+            }else{
+                // get sucesor
+                Node<T> nodeSuccesor = node.getSuccesor(element);
+                // recordar en que lugar esta
+                // izquieda 0, derecha 1
+                int whereIsValue ;
+                if(node.getLeftValue() == element){
+                    whereIsValue = 0;
+                }else{
+                    whereIsValue = 1;
+                }
+                
+                // intercambiar valores
+                node.swapValue(element, nodeSuccesor);
 
-    private Node<T> searchForDelete(Node<T> currentNode, T element) {
-        if (currentNode == null) {
-            return null;
-        } else if (currentNode.contains(element)) {
-            return currentNode;
+                // eliminar 
+                // si el el elemnto izquierdo
+                int result;
+                if (whereIsValue == 0){
+
+                    result = deleteRecursive(node.getMiddleChild(), element);
+                }else{
+                    result = deleteRecursive(node.getRightChild(), element);
+                }
+
+                // rebalanceo
+
+                if(result == 1){
+                    return node.reBalance();
+                }else{
+                    return result;
+                }
+
+            }
+        }else {
+            // izquierda
+            if(element.compareTo(node.getLeftValue()) == -1){
+                int result =  deleteRecursive(node.getLeftChild(), element);
+                if(result == 1){
+                    return node.reBalance();
+                }else{
+                    return result;
+                }
+            }
+            // medio
+            else if(element.compareTo(node.getLeftValue()) == 1 && node.is2Node()){
+                int result =  deleteRecursive(node.getMiddleChild(), element);
+                if(result == 1){
+                    return node.reBalance();
+                }else{
+                    return result;
+                }
+            }
+            // derecha
+            else if(node.is3Node() && element.compareTo(node.getRightValue()) == 1){
+                int result =  deleteRecursive(node.getRightChild(), element);
+                if(result == 1){
+                    return node.reBalance();
+                }else{
+                    return result;
+                }
+            }else{
+                return -1;
+            }
+
         }
-
-        else {
-            // Compare with left value
-            int compareLeft = element.compareTo(currentNode.getLeftValue());
-            if (compareLeft == 0) {
-                return currentNode; // Element found
-            } else if (compareLeft < 0 && currentNode.getLeftChild() != null) {
-                return searchForDelete(currentNode.getLeftChild(), element);
-            }
-
-            // Compare with right value
-            int compareRight = element.compareTo(currentNode.getRightValue());
-            if (compareRight == 0) {
-                return currentNode; // Element found
-            } else if (compareRight > 0 && currentNode.getRightChild() != null) {
-                return searchForDelete(currentNode.getRightChild(), element);
-            }
-
-            // If it's a 3-node, compare with middle value
-            if (currentNode.is3Node()) {
-                return searchForDelete(currentNode.getMiddleChild(), element);
-            }
-            return null;
-        }
-
     }
 
     @Override
@@ -189,5 +246,4 @@ public class Tree23<T extends Comparable<T>> implements DTATree23<T> {
         root = null;
     }
 
-    // Otros métodos y funciones auxiliares según sea necesario...
 }
