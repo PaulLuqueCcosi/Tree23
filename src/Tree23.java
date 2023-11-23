@@ -11,6 +11,8 @@ public class Tree23<T extends Comparable<T>> implements DTATree23<T> {
 
     @Override
     public boolean insert(T element) {
+        NodeInsertReturnData<T> dataReturn;
+
         boolean result = true;
 
         // Si la raíz es null, crea un nuevo nodo con el elemento como único valor
@@ -18,42 +20,52 @@ public class Tree23<T extends Comparable<T>> implements DTATree23<T> {
             root = new Node<>(element);
         } else {
             // Llama al método auxiliar insertRecursive desde la raíz
-            root = insertRecursive(root, element);
+            dataReturn = insertRecursive(root, element);
+            if (dataReturn.getResult() == NodeInsertReturnData.IS_SPLIT) {
+                root = dataReturn.getNode();
+            }
         }
 
         return result;
     }
 
-    private Node<T> insertRecursive(Node<T> currentNode, T element) {
+    private NodeInsertReturnData<T> insertRecursive(Node<T> currentNode, T element) {
+        NodeInsertReturnData<T> dataReturn;
+
         // condicion de parada
         if (currentNode.isLeaf()) {
-            return currentNode.insert(element);
+            dataReturn = currentNode.insert(element);
+            return dataReturn;
         }
 
         // recursividad
         // Determine which child to traverse based on the element's value
+
         // izquierda
         if (element.compareTo(currentNode.getLeftValue()) == ROOT_IS_SMALLER) {
-            if (currentNode.getLeftChild().isSplitForInsert()) {
-                currentNode.insertNode(insertRecursive(currentNode.getLeftChild(), element));
-            } else {
-                insertRecursive(currentNode.getLeftChild(), element);
+
+            dataReturn = insertRecursive(currentNode.getLeftChild(), element);
+            if (dataReturn.getResult() == NodeInsertReturnData.IS_SPLIT) { // split
+                return currentNode.insertLeftChildInNode(dataReturn.getNode());
             }
-        } else if (currentNode.getRightValue() != null && element.compareTo(currentNode.getRightValue()) == ROOT_IS_BIGGER ) {
-            if (currentNode.getRightChild().isSplitForInsert()) {
-                currentNode.insertNode(insertRecursive(currentNode.getRightChild(), element));
-            } else {
-                insertRecursive(currentNode.getRightChild(), element);
+            return dataReturn;
+
+            // derecha
+        } else if (currentNode.getRightValue() != null
+                && element.compareTo(currentNode.getRightValue()) == ROOT_IS_BIGGER) {
+            dataReturn = insertRecursive(currentNode.getRightChild(), element);
+            if (dataReturn.getResult() == NodeInsertReturnData.IS_SPLIT) { // split
+                return currentNode.insertRightChildInNode(dataReturn.getNode());
             }
-        } else {
-            if (currentNode.getMiddleChild().isSplitForInsert()) {
-                currentNode.insertNode(insertRecursive(currentNode.getMiddleChild(), element));
-            } else {
-                insertRecursive(currentNode.getMiddleChild(), element);
+            return dataReturn;
+        } else { // medio
+            dataReturn = insertRecursive(currentNode.getMiddleChild(), element);
+            if (dataReturn.getResult() == NodeInsertReturnData.IS_SPLIT) { // split
+                return currentNode.insertMidChildInNode(dataReturn.getNode());
             }
+            return dataReturn;
         }
 
-        return currentNode;
     }
 
     @Override
@@ -161,7 +173,7 @@ public class Tree23<T extends Comparable<T>> implements DTATree23<T> {
 
             }
         }
-        
+
         // no contienen al elemento, recursividad
         else {
             // izquierda
@@ -173,15 +185,7 @@ public class Tree23<T extends Comparable<T>> implements DTATree23<T> {
                     return result;
                 }
             }
-            // medio
-            else if (element.compareTo(node.getLeftValue()) == 1 && node.is2Node()) {
-                int result = deleteRecursive(node.getMiddleChild(), element);
-                if (result == 1) {
-                    return node.reBalance();
-                } else {
-                    return result;
-                }
-            }
+
             // derecha
             else if (node.is3Node() && element.compareTo(node.getRightValue()) == 1) {
                 int result = deleteRecursive(node.getRightChild(), element);
@@ -190,8 +194,15 @@ public class Tree23<T extends Comparable<T>> implements DTATree23<T> {
                 } else {
                     return result;
                 }
-            } else {
-                return -1;
+            }
+            // medio
+            else {
+                int result = deleteRecursive(node.getMiddleChild(), element);
+                if (result == 1) {
+                    return node.reBalance();
+                } else {
+                    return result;
+                }
             }
 
         }
@@ -205,7 +216,7 @@ public class Tree23<T extends Comparable<T>> implements DTATree23<T> {
             return inOrder(root, str).substring(0, str.length() - 1);
         } else {
             // System.out.print("The tree is empty...");
-            return "The tree is empty...";
+            return "";
         }
     }
 

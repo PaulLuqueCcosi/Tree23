@@ -153,18 +153,23 @@ public class Node<T extends Comparable<T>> {
         return (this.getLeftValue() != null && this.getRightValue() != null);
     }
 
-    public Node<T> insert(T element) {
+    public NodeInsertReturnData<T> insert(T element) {
+        NodeInsertReturnData<T> result = new NodeInsertReturnData<T>();
         Node<T> newNode = this;
 
         // check if empty node
         if (this.isEmptyValues()) {
             this.setLeftValue(element);
+            result.setNode(this);
+            result.setResult(NodeInsertReturnData.NOT_SPLIT);
         }
 
         // Check if the node is full
         else if (this.getLeftValue() != null && this.getRightValue() != null) {
             // Node is full, split before insertion
             newNode = split(new Node<T>(element));
+            result.setNode(newNode);
+            result.setResult(NodeInsertReturnData.IS_SPLIT);
         }
 
         // Determine the correct position to insert the new element
@@ -172,47 +177,16 @@ public class Node<T extends Comparable<T>> {
             // Insert to the left
             this.setRightValue(this.getLeftValue());
             this.setLeftValue(element);
+            result.setNode(this);
+            result.setResult(NodeInsertReturnData.NOT_SPLIT);
         } else {
             // Insert to the right
             this.setRightValue(element);
+            result.setNode(this);
+            result.setResult(NodeInsertReturnData.NOT_SPLIT);
         }
-
-        return newNode;
-    }
-
-    public Node<T> insertNode(Node<T> nodeToInsert) {
-        Node<T> newNode = this;
-
-        // Check if the node is full
-        if (this.getLeftValue() != null && this.getRightValue() != null) {
-            // Node is full, split before insertion
-            newNode = split(nodeToInsert);
-        }
-
-        // Determine the correct position to insert the new element
-        else if (this.getLeftValue() == null
-                || nodeToInsert.getLeftValue().compareTo(this.getLeftValue()) == ROOT_IS_SMALLER) {
-            // Insert to the left
-            this.setRightValue(this.getLeftValue());
-            this.setLeftValue(nodeToInsert.getLeftValue());
-
-            // acomodamos los hijos
-            this.setLeftChild(nodeToInsert.getLeftChild());
-            this.setRightChild(this.getMiddleChild());
-            this.setCenterChild(nodeToInsert.getMiddleChild());
-
-        } else {
-            // Insert to the right
-            this.setRightValue(nodeToInsert.getLeftValue());
-
-            // acomodamos los hijos
-            this.setRightChild(nodeToInsert.getRightChild());
-            this.setLeftChild(this.getMiddleChild());
-            this.setCenterChild(nodeToInsert.getMiddleChild());
-
-        }
-
-        return newNode;
+        // corregir
+        return result;
     }
 
     private Node<T> split(Node<T> newElement) {
@@ -505,7 +479,7 @@ public class Node<T extends Comparable<T>> {
         // return 0 si no necesita rebalancear este nod
         // return -1 si no se encuentra el valor
 
-        if (this.getLeftValue() == data) {
+        if (this.getLeftValue().equals(data)) {
             if (this.getRightValue() == null) {
                 this.setLeftValue(null);
                 return 1;
@@ -525,9 +499,12 @@ public class Node<T extends Comparable<T>> {
     }
 
     public Node<T> getSuccesor(T valor) {
-        if (valor == this.getLeftValue()) {
+        if(this.isLeaf()){
+            return this;
+        }
+        else if (valor.equals(this.getLeftValue())) {
             return getSuccesorRecursive(this.getMiddleChild());
-        } else if (valor == this.getRightValue()) {
+        } else if (valor.equals(this.getRightValue())) {
             return getSuccesorRecursive(this.getRightChild());
         }
 
@@ -551,13 +528,97 @@ public class Node<T extends Comparable<T>> {
     }
 
     public void swapValue(T value, Node<T> nodeSuccesor) {
-        if (value == this.getLeftValue()) {
+        if (value.equals(this.getLeftValue())) {
             this.setLeftValue(nodeSuccesor.getLeftValue());
-        } else if (value == this.getRightValue()) {
+        } else if (value.equals(this.getRightValue())) {
             this.setRightValue(nodeSuccesor.getLeftValue());
         }
 
         nodeSuccesor.setLeftValue(value);
+    }
+
+    public NodeInsertReturnData<T> insertMidChildInNode(Node<T> midChild) {
+        NodeInsertReturnData<T> result;
+        if (this.is2Node()) {
+            // move elements
+            this.setRightValue(midChild.getLeftValue());
+
+            // this.setLeftValue(this.getLeftChild().getLeftValue());
+
+            // childs
+            // this.testSetRightChild(this.getMiddleChild());
+            this.testSetRightChild(midChild.getMiddleChild());
+            this.testSetCenterChild(midChild.getLeftChild());
+
+            result = new NodeInsertReturnData<T>(this, 0);
+
+        } else {
+            Node<T> newCenterNode = midChild;
+
+            Node<T> newLeftNode = new Node<T>(this.getLeftValue());
+            newLeftNode.setLeftChild(this.getLeftChild());
+            newLeftNode.setCenterChild(midChild.getLeftChild());
+
+            Node<T> newRightNode = new Node<T>(this.getRightValue());
+            newRightNode.setLeftChild(midChild.getMiddleChild());
+            newRightNode.setCenterChild(this.getRightChild());
+
+            // newRightNode.getAndDeleteLeftValue();
+
+            newCenterNode.setLeftChild(newLeftNode);
+            newCenterNode.setCenterChild(newRightNode);
+
+            result = new NodeInsertReturnData<T>(newCenterNode, 1);
+
+        }
+        return result;
+        //
+    }
+
+    public NodeInsertReturnData<T> insertRightChildInNode(Node<T> rightChild) {
+        NodeInsertReturnData<T> result;
+
+        Node<T> newCenterNode = new Node<>(this.getRightValue());
+        Node<T> newLeftNode = this;
+        Node<T> newRightNode = rightChild;
+        newLeftNode.getAndDeleteRightValue();
+
+        newCenterNode.setLeftChild(newLeftNode);
+        newCenterNode.setCenterChild(newRightNode);
+
+        result = new NodeInsertReturnData<T>(newCenterNode, 1);
+
+        return result;
+
+    }
+
+    public NodeInsertReturnData<T> insertLeftChildInNode(Node<T> leftChild) {
+        NodeInsertReturnData<T> result;
+        if (this.is2Node()) {
+            // move elements
+            this.setRightValue(this.getLeftValue());
+            this.setLeftValue(leftChild.getLeftValue());
+
+            // childs
+            this.testSetRightChild(this.getMiddleChild());
+            this.testSetCenterChild(leftChild.getMiddleChild());
+            this.testSetLeftChild(leftChild.getLeftChild());
+
+            result = new NodeInsertReturnData<T>(this, 0);
+
+        } else {
+            Node<T> newCenterNode = new Node<>(this.getLeftValue());
+            Node<T> newLeftNode = leftChild;
+            Node<T> newRightNode = this;
+            newRightNode.getAndDeleteLeftValue();
+
+            newCenterNode.setLeftChild(newLeftNode);
+            newCenterNode.setCenterChild(newRightNode);
+
+            result = new NodeInsertReturnData<T>(newCenterNode, 1);
+
+        }
+        return result;
     }
 
     // para testear
@@ -573,5 +634,4 @@ public class Node<T extends Comparable<T>> {
     public void testSetCenterChild(Node<T> centerChild) {
         this.children[1] = centerChild;
     }
-
 }

@@ -9,6 +9,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import src.Node;
+import src.NodeInsertReturnData;
 import src.Node;
 
 public class NodeTest {
@@ -27,26 +28,27 @@ public class NodeTest {
 
     // @Test
     // public void testGetLeftChild() {
-    //     Node<Integer> node = new Node<Integer>(5);
-    //     Node<Integer> leftChild = new Node<Integer>(3);
-    //     Node<Integer> rightChild = new Node<Integer>(10);
+    // Node<Integer> node = new Node<Integer>(5);
+    // Node<Integer> leftChild = new Node<Integer>(3);
+    // Node<Integer> rightChild = new Node<Integer>(10);
 
-    //     assertNull(node.getLeftChild());
+    // assertNull(node.getLeftChild());
 
-        // node.insertNode(leftChild);
-    //     node.insertNode(rightChild);
-    //     assertEquals(node.getLeftChild(), leftChild);
+    // node.insertNode(leftChild);
+    // node.insertNode(rightChild);
+    // assertEquals(node.getLeftChild(), leftChild);
     // }
 
     @Test
     public void testInsertOneElementMax() {
         // Test Case 1: Insert into an Empty Node
         Node<Integer> node = new Node<Integer>(10);
-        node = node.insert(20);
+        NodeInsertReturnData<Integer> newNode = node.insert(20);
 
-        assertEquals(node.getLeftValue(), Integer.valueOf(10));
-        assertEquals(node.getRightValue(), Integer.valueOf(20));
-        assertTrue(node.is3Node());
+        assertEquals(newNode.getNode().getLeftValue(), Integer.valueOf(10));
+        assertEquals(newNode.getNode().getRightValue(), Integer.valueOf(20));
+        assertTrue(newNode.getNode().is3Node());
+        assertEquals(newNode.getResult(), NodeInsertReturnData.NOT_SPLIT);
 
     }
 
@@ -54,11 +56,12 @@ public class NodeTest {
     public void testInsertOneElementMin() {
         // Test Case 1: Insert into an Empty Node
         Node<Integer> node = new Node<Integer>(10);
-        node = node.insert(5);
+        NodeInsertReturnData<Integer> newNode = node.insert(5);
 
-        assertEquals(node.getLeftValue(), Integer.valueOf(5));
-        assertEquals(node.getRightValue(), Integer.valueOf(10));
-        assertTrue(node.is3Node());
+        assertEquals(newNode.getNode().getLeftValue(), Integer.valueOf(5));
+        assertEquals(newNode.getNode().getRightValue(), Integer.valueOf(10));
+        assertTrue(newNode.getNode().is3Node());
+        assertEquals(newNode.getResult(), NodeInsertReturnData.NOT_SPLIT);
 
     }
 
@@ -66,7 +69,10 @@ public class NodeTest {
     public void testInsertFullInserLeft() {
         // Test Case 1: Insert into an Empty Node
         Node<Integer> node = new Node<Integer>(10);
-        node = node.insert(5);
+        NodeInsertReturnData<Integer> newNode = node.insert(5);
+        node = newNode.getNode();
+
+        // node = node.insert(5);
 
         // insert new element
         assertTrue(node.isSplitForInsert());
@@ -74,9 +80,11 @@ public class NodeTest {
         assertNull(node.getLeftChild());
         assertNull(node.getMiddleChild());
         assertNull(node.getRightChild());
+        assertEquals(NodeInsertReturnData.NOT_SPLIT, newNode.getResult());
 
         // insert other
-        node = node.insert(2);
+        NodeInsertReturnData<Integer> newNode2 = node.insert(2);
+        node = newNode2.getNode();
 
         // check node
         assertEquals(node.getLeftValue(), Integer.valueOf(5));
@@ -105,9 +113,13 @@ public class NodeTest {
     public void testInsertFullInserMid() {
         // Test Case 1: Insert into an Empty Node
         Node<Integer> node = new Node<Integer>(10);
-        node = node.insert(5);
+        NodeInsertReturnData<Integer> newNode = node.insert(5);
+        node = newNode.getNode();
+        // node = node.insert(5);
 
         // insert new element
+        assertEquals(newNode.getResult(), NodeInsertReturnData.NOT_SPLIT);
+
         assertTrue(node.isSplitForInsert());
         // childs null
         assertNull(node.getLeftChild());
@@ -115,9 +127,13 @@ public class NodeTest {
         assertNull(node.getRightChild());
 
         // insert other
-        node = node.insert(7);
+        NodeInsertReturnData<Integer> newNode2 = node.insert(7);
+        node = newNode2.getNode();
+        // node = node.insert(7);
 
         // check node
+        assertEquals(newNode2.getResult(), NodeInsertReturnData.IS_SPLIT);
+
         assertEquals(node.getLeftValue(), Integer.valueOf(7));
         assertEquals(node.getRightValue(), null);
         // assertTrue(node.is2Node());
@@ -144,7 +160,9 @@ public class NodeTest {
     public void testInsertFullInserRight() {
         // Test Case 1: Insert into an Empty Node
         Node<Integer> node = new Node<Integer>(10);
-        node = node.insert(5);
+        NodeInsertReturnData<Integer> newNode = node.insert(5);
+        node = newNode.getNode();
+        // node = node.insert(5);
 
         // insert new element
         assertTrue(node.isSplitForInsert());
@@ -154,7 +172,9 @@ public class NodeTest {
         assertNull(node.getRightChild());
 
         // insert other
-        node = node.insert(20);
+        NodeInsertReturnData<Integer> newNode2 = node.insert(20);
+        node = newNode2.getNode();
+        // node = node.insert(20);
 
         // check node
         assertEquals(node.getLeftValue(), Integer.valueOf(10));
@@ -180,48 +200,6 @@ public class NodeTest {
     }
 
     @Test
-    public void testInsert2Node() {
-        // Test Case 1: Insert into an Empty Node
-        Node<Integer> node = new Node<Integer>(10);
-        Node<Integer> child1 = new Node<Integer>(50);
-        Node<Integer> child2 = new Node<Integer>(5);
-
-        node = node.insertNode(child1);
-
-        // insert new element
-        assertTrue(node.isSplitForInsert());
-        // childs null
-        assertNull(node.getLeftChild());
-        assertNull(node.getMiddleChild());
-        assertNull(node.getRightChild());
-
-        // insert other
-        node = node.insertNode(child2);
-
-        // check node
-        assertEquals(node.getLeftValue(), Integer.valueOf(10));
-        assertEquals(node.getRightValue(), null);
-        // assertTrue(node.is2Node());
-        assertNotNull(node.getLeftChild());
-        assertNotNull(node.getMiddleChild());
-        assertNull(node.getRightChild());
-
-        // check children left
-        assertEquals(node.getLeftChild().getLeftValue(), Integer.valueOf(5));
-        assertEquals(node.getLeftChild().getRightValue(), null);
-        // assertTrue(node.getLeftChild().is2Node());
-
-        // check mid right
-        assertEquals(node.getMiddleChild().getLeftValue(), Integer.valueOf(50));
-        assertEquals(node.getMiddleChild().getRightValue(), null);
-        // assertTrue(node.getRightChild().is2Node());
-
-        // check right child
-        assertNull(node.getRightChild());
-        // assertTrue(node.getRightChild().is2Node());
-    }
-
-    @Test
     public void testIsLeaf() {
         // Test Case 1: Leaf Node
         Node<Integer> leafNode = new Node<>(42);
@@ -229,10 +207,9 @@ public class NodeTest {
 
         // Test Case 2: Non-Leaf Node
         Node<Integer> nonLeafNode = new Node<>(42);
-        nonLeafNode.insertNode(new Node<>(30));
-        nonLeafNode.insertNode(new Node<>(50));
+        nonLeafNode = nonLeafNode.insert(30).getNode();
+        nonLeafNode = nonLeafNode.insert(50).getNode();
 
-        nonLeafNode.insertNode(new Node<>(30));
         assertFalse("Non-Leaf Node", nonLeafNode.isLeaf());
 
         // Add more test cases as needed...
@@ -265,8 +242,12 @@ public class NodeTest {
     public void testReBalance1() {
         // Caso 1: Nodo balanceado, no se requiere rebalanceo
         Node<Integer> node = new Node<>(20);
-        node = node.insert(Integer.valueOf(10));
-        node = node.insert(Integer.valueOf(30));
+        NodeInsertReturnData<Integer> newNode = node.insert(10);
+        node = newNode.getNode();
+        // node = node.insert(Integer.valueOf(10));
+        NodeInsertReturnData<Integer> newNode2 = node.insert(30);
+        node = newNode2.getNode();
+        // node = node.insert(Integer.valueOf(30));
 
         // eliminamos a la fuerza
         node.testSetCenterChild(new Node<>());
@@ -285,10 +266,15 @@ public class NodeTest {
     public void testReBalance2() {
         // Caso 1: Nodo balanceado, no se requiere rebalanceo
         Node<Integer> node = new Node<>(20);
-        node = node.insert(Integer.valueOf(10));
-        node = node.insert(Integer.valueOf(30));
+        NodeInsertReturnData<Integer> newNode = node.insert(10);
+        node = newNode.getNode();
+        // node = node.insert(Integer.valueOf(10));
+        NodeInsertReturnData<Integer> newNode2 = node.insert(30);
+        node = newNode2.getNode();
+        // node = node.insert(Integer.valueOf(10));
+        // node = node.insert(Integer.valueOf(30));
 
-        node.testSetLeftChild(node.getLeftChild().insert(Integer.valueOf(5)));
+        node.testSetLeftChild(node.getLeftChild().insert(Integer.valueOf(5)).getNode());
 
         // eliminamos a la fuerza
         node.testSetCenterChild(new Node<>());
@@ -326,10 +312,6 @@ public class NodeTest {
 
         assertEquals(node.getRightValue(), null);
         assertEquals(node.getRightChild(), null);
-        
-        
-    
-
 
     }
 
