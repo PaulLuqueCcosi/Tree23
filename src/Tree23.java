@@ -71,7 +71,7 @@ public class Tree23<T extends Comparable<T>> implements DTATree23<T> {
         int compareLeft = element.compareTo(currentNode.getLeftValue());
         if (compareLeft == ROOT_IS_EQUALS) {
             return true; // Element found
-        } else if (compareLeft < ROOT_IS_SMALLER && currentNode.getLeftChild() != null) {
+        } else if (compareLeft == ROOT_IS_SMALLER) {
             return search(currentNode.getLeftChild(), element);
         }
 
@@ -79,7 +79,7 @@ public class Tree23<T extends Comparable<T>> implements DTATree23<T> {
         int compareRight = element.compareTo(currentNode.getRightValue());
         if (compareRight == ROOT_IS_EQUALS) {
             return true; // Element found
-        } else if (compareRight > 0 && currentNode.getRightChild() != null) {
+        } else if (compareRight > 0) {
             return search(currentNode.getRightChild(), element);
         }
 
