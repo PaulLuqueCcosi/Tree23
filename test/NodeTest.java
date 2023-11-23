@@ -33,8 +33,8 @@ public class NodeTest {
 
         assertNull(node.getLeftChild());
 
-        node.insert(leftChild);
-        node.insert(rightChild);
+        node.insertNode(leftChild);
+        node.insertNode(rightChild);
         assertEquals(node.getLeftChild(), leftChild);
     }
 
@@ -186,7 +186,7 @@ public class NodeTest {
         Node<Integer> child1 = new Node<Integer>(50);
         Node<Integer> child2 = new Node<Integer>(5);
 
-        node = node.insert(child1);
+        node = node.insertNode(child1);
 
         // insert new element
         assertTrue(node.isSplitForInsert());
@@ -196,7 +196,7 @@ public class NodeTest {
         assertNull(node.getRightChild());
 
         // insert other
-        node = node.insert(child2);
+        node = node.insertNode(child2);
 
         // check node
         assertEquals(node.getLeftValue(), Integer.valueOf(10));
@@ -229,10 +229,10 @@ public class NodeTest {
 
         // Test Case 2: Non-Leaf Node
         Node<Integer> nonLeafNode = new Node<>(42);
-        nonLeafNode.insert(new Node<>(30));
-        nonLeafNode.insert(new Node<>(50));
+        nonLeafNode.insertNode(new Node<>(30));
+        nonLeafNode.insertNode(new Node<>(50));
 
-        nonLeafNode.insert(new Node<>(30));
+        nonLeafNode.insertNode(new Node<>(30));
         assertFalse("Non-Leaf Node", nonLeafNode.isLeaf());
 
         // Add more test cases as needed...

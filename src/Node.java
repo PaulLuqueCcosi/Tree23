@@ -180,7 +180,7 @@ public class Node<T extends Comparable<T>> {
         return newNode;
     }
 
-    public Node<T> insert(Node<T> nodeToInsert) {
+    public Node<T> insertNode(Node<T> nodeToInsert) {
         Node<T> newNode = this;
 
         // Check if the node is full
@@ -375,7 +375,7 @@ public class Node<T extends Comparable<T>> {
             // solucioando
             childFault.insert(leftdata);
             // fin solucionando
-            node.insertFoultNodeLeft(childFault);
+            node.insertFaultNodeLeft(childFault);
             return (node.isEmptyValues() ? 1 : 0);
         }
         // tiene 2 valores el hermano
@@ -386,13 +386,13 @@ public class Node<T extends Comparable<T>> {
             // solucioando
             childFault.insert(leftdata);
             // fin solucionando
-            node.insertFoultNodeLeft(childFault);
+            node.insertFaultNodeLeft(childFault);
             return (node.isEmptyValues() ? 1 : 0);
 
         }
     }
 
-    private void insertFoultNodeLeft(Node<T> childFault) {
+    private void insertFaultNodeLeft(Node<T> childFault) {
 
         // si no tieme espacop
         if (this.getMiddleChild().isSplitForInsert()) {
@@ -420,7 +420,7 @@ public class Node<T extends Comparable<T>> {
         }
     }
 
-    private void insertFoultNodeRight(Node<T> childFault) {
+    private void insertFaultNodeRight(Node<T> childFault) {
 
         // si no tieme espacop
         if (this.getMiddleChild().isSplitForInsert()) {
@@ -488,7 +488,7 @@ public class Node<T extends Comparable<T>> {
             T rightData = node.getRightValue();
             childFault.insert(rightData);
 
-            node.insertFoultNodeRight(childFault);
+            node.insertFaultNodeRight(childFault);
             return (node.isEmptyValues() ? 1 : 0);
         }
         // tiene 2 valores el hermano
@@ -499,7 +499,7 @@ public class Node<T extends Comparable<T>> {
 
             childFault.insert(rightData);
 
-            node.insertFoultNodeRight(childFault);
+            node.insertFaultNodeRight(childFault);
             return (node.isEmptyValues() ? 1 : 0);
         }
     }
