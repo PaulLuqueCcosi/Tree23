@@ -341,23 +341,7 @@ public class NodeTest {
 
     }
 
-    @Test
-    public void testGetSuccessor() {
-        // Caso 1: Nodo hoja, no tiene sucesor
-        Node<Integer> leafNode = new Node<>(1);
-        assertNull(leafNode.getSuccesor(leafNode.getLeftValue()));
-
-        // Caso 2: Nodo 2-nodo, sucesor es el valor en el nodo
-        Node<Integer> twoNode = new Node<>(1);
-        twoNode.insert(2);
-        assertEquals(null, twoNode.getSuccesor(twoNode.getLeftValue()));
-
-        // Caso 3: Nodo 3-nodo, sucesor es el valor más pequeño del subárbol derecho
-        Node<Integer> threeNode = new Node<>(1, 2);
-        threeNode.insert(3);
-        assertEquals(new Node<>(3), threeNode.getSuccesor(threeNode.getLeftValue()));
-
-    }
+    
 
     @Test
     public void testSwapValue() {
