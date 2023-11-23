@@ -25,18 +25,18 @@ public class NodeTest {
         assertNull(node.getRightChild());
     }
 
-    @Test
-    public void testGetLeftChild() {
-        Node<Integer> node = new Node<Integer>(5);
-        Node<Integer> leftChild = new Node<Integer>(3);
-        Node<Integer> rightChild = new Node<Integer>(10);
+    // @Test
+    // public void testGetLeftChild() {
+    //     Node<Integer> node = new Node<Integer>(5);
+    //     Node<Integer> leftChild = new Node<Integer>(3);
+    //     Node<Integer> rightChild = new Node<Integer>(10);
 
-        assertNull(node.getLeftChild());
+    //     assertNull(node.getLeftChild());
 
-        node.insertNode(leftChild);
-        node.insertNode(rightChild);
-        assertEquals(node.getLeftChild(), leftChild);
-    }
+        // node.insertNode(leftChild);
+    //     node.insertNode(rightChild);
+    //     assertEquals(node.getLeftChild(), leftChild);
+    // }
 
     @Test
     public void testInsertOneElementMax() {

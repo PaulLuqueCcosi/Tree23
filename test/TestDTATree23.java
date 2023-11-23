@@ -60,6 +60,30 @@ public class TestDTATree23 {
     }
 
     @Test
+    public void testInsert10To150() {
+        DTATree23<Integer> tree = new Tree23<Integer>();
+
+        tree.insert(10);
+        tree.insert(20);
+        tree.insert(30);
+        tree.insert(40);
+        tree.insert(50);
+        tree.insert(60);
+        tree.insert(70);
+        tree.insert(80);
+        tree.insert(90);
+        tree.insert(100);
+        tree.insert(110);
+        tree.insert(120);
+        tree.insert(130);
+        tree.insert(140);
+        tree.insert(150);
+
+        String inOrden = "10 20 30 40 50 60 70 80 90 100 110 120 130 140 150";
+        assertEquals(inOrden, tree.inOrder());
+    }
+
+    @Test
     public void testIsEmpty() {
         DTATree23<Integer> tree = new Tree23<Integer>();
         assertTrue(tree.isEmpty());

@@ -39,7 +39,7 @@ public class Tree23<T extends Comparable<T>> implements DTATree23<T> {
             } else {
                 insertRecursive(currentNode.getLeftChild(), element);
             }
-        } else if (element.compareTo(currentNode.getRightValue()) == ROOT_IS_BIGGER) {
+        } else if (currentNode.getRightValue() != null && element.compareTo(currentNode.getRightValue()) == ROOT_IS_BIGGER ) {
             if (currentNode.getRightChild().isSplitForInsert()) {
                 currentNode.insertNode(insertRecursive(currentNode.getRightChild(), element));
             } else {
