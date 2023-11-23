@@ -161,6 +161,7 @@ public class Tree23<T extends Comparable<T>> implements DTATree23<T> {
 
             }
         }
+        
         // no contienen al elemento, recursividad
         else {
             // izquierda

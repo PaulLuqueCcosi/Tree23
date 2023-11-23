@@ -484,21 +484,16 @@ public class Node<T extends Comparable<T>> {
         // si el hermano del medio tiene 1 valor
         if (node.getMiddleChild().is2Node()) {
             Node<T> childFault = node.getRightChild();
-
             T rightData = node.getRightValue();
             childFault.insert(rightData);
-
             node.insertFaultNodeRight(childFault);
             return (node.isEmptyValues() ? 1 : 0);
         }
         // tiene 2 valores el hermano
         else {
             Node<T> childFault = node.getRightChild();
-
             T rightData = node.getRightValue();
-
             childFault.insert(rightData);
-
             node.insertFaultNodeRight(childFault);
             return (node.isEmptyValues() ? 1 : 0);
         }
